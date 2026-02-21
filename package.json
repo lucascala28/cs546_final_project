@@ -1,0 +1,22 @@
+{
+  "name": "final_project",
+  "version": "1.0.0",
+  "description": "Final Project for CS 546-WS",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucascala28/cs546_final_project.git"
+  },
+  "author": "Luca Scala, Ian Nevins, Molly DiCampli, Melissa Rich",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucascala28/cs546_final_project/issues"
+  },
+  "homepage": "https://github.com/lucascala28/cs546_final_project#readme",
+  "dependencies": {
+    "mongodb": "^7.1.0"
+  }
+}
