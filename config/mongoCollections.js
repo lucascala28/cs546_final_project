@@ -14,3 +14,4 @@ const getCollectionFn = (collection) => {
 };
 
 export const reports = getCollectionFn("reports");
+export const trails = getCollectionFn("trails");
