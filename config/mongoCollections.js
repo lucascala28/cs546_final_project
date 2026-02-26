@@ -13,5 +13,4 @@ const getCollectionFn = (collection) => {
   };
 };
 
-export const collection /* change based on project */ =
-  getCollectionFn("collection");
+export const reports = getCollectionFn("reports");
