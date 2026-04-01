@@ -12,25 +12,23 @@ https://gisdata-njdep.opendata.arcgis.com/datasets/statewide-trails-in-new-jerse
 
 ## Core Features:
 1. Visualization of all available trails in NJ
-a. Trail Filtering - Filters trails by length, surface type, trail type (hiking, biking,
+- Trail Filtering - Filters trails by length, surface type, trail type (hiking, biking,
 etc), and current status
-b. Trail detail page - length of trail, level of difficulty, surface type
+- Trail detail page - length of trail, level of difficulty, surface type
 2. Current Location - Detect the user's current location and highlight nearby trails
 3. User Features:
-a. Create Report - Users can submit condition reports for trails, providing
-description, severity and photo uploads
-b. Read Reports - Users can view all reports associated with a trail, sort by recency
-c. Report Upvoting - Users can upvote existing reports to confirm an issue is still
-present
-d. Delete Reports - Users can delete their own reports or mark issues as resolved
-e. Update Trail Status - Trail status is updated based on incoming reports
-f. Comment on Trails - Users may comment underneath trails to ask questions
-g. Favorite / Bookmark trails to save trails a user goes on.
-h. Search bar to search for trails in area
-4. Admin Features:
-a. Moderate submissions, allowing for approval and denial of user submissions
-b. Edit trail information from the original dataset
-c. Delete trails from the System
+* Create Report - Users can submit condition reports for trails, providing description, severity and photo uploads
+* Read Reports - Users can view all reports associated with a trail, sort by recency
+* Report Upvoting - Users can upvote existing reports to confirm an issue is stillpresent
+* Delete Reports - Users can delete their own reports or mark issues as resolved
+* Update Trail Status - Trail status is updated based on incoming reports
+* Comment on Trails - Users may comment underneath trails to ask questions
+* Favorite / Bookmark trails to save trails a user goes on.
+* Search bar to search for trails in area
+1. Admin Features:
+* Moderate submissions, allowing for approval and denial of user submissions
+* Edit trail information from the original dataset
+* Delete trails from the System
 ## Extra Features:
 1. Community Badges - New Trails Badge, Frequent hiker badge, Safety badge (most
 reports)
