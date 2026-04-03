@@ -1,6 +1,7 @@
 import { comments } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
-import { getTrailById } from "./trail.js";
+
+import { checkId, checkCommentObj } from "../helpers.js";
 
 export const createComment = async (commentObj) => {
   commentObj = await checkCommentObj(commentObj);
@@ -12,9 +13,19 @@ export const createComment = async (commentObj) => {
     throw new Error("Failed to add comment to database.");
   }
 
-  const comment = getCommentById(insertInfo.insertedId.toString());
+  const comment = await getCommentById(insertInfo.insertedId.toString());
 
   return comment;
 };
 
-export const getCommentById = async (id) => { }
+export const getCommentById = async (id) => {
+  id = checkId(id);
+
+  const commentCollection = await comments();
+  const commentMatch = await commentCollection.findOne({ _id: new ObjectId(id) });
+
+  if (!commentMatch) throw new Error(`No comment found in database with id ${id}`);
+
+  commentMatch._id = commentMatch._id.toString();
+  return commentMatch;
+}

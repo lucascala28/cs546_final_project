@@ -2,6 +2,8 @@ import bcrypt from "bcrypt";
 import { users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 
+import { checkId, checkEmail } from "../helpers.js"; 
+
 const SALT_ROUNDS = 12; // number of hashing iterations basically the higher the more secure but the more expensive
 
 export const createUser = async (
@@ -26,7 +28,7 @@ export const createUser = async (
     const insertInfo = await userCollection.insertOne(newUser);
     if (!insertInfo.acknowledged || !insertInfo.insertedId) throw new Error("Failed to insert new user into database.");
 
-    const user = getUserById(insertInfo.insertedId.toString());
+    const user = await getUserById(insertInfo.insertedId.toString());
 
     return user;
 }
