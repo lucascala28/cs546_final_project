@@ -75,7 +75,28 @@ export const checkCommentObj = async (commentObj) => {
 
 };
 
-export const checkDate = (dateStr) => { }
+export const checkDate = (dateStr) => {
+  if (!dateStr) throw ("Date not provided. "); //if not provided
+  if (typeof dateStr !== "string" || dateStr.trim().length === 0)
+    throw new Error("Date not valid. ")
+
+  //check if date is in good format
+  const dateFormat = /^\d{2}\/\d{2}\/\d{4}$/;
+  if (!dateFormat.test(dateStr.trim()))
+    throw new Error("Date must be MM/DD/YYYY format.");
+
+  //check if date is a valid day
+    //date code similar from lab4
+  const [month, day, year] = dateStr.trim().split("/").map(Number);
+  const dateObj = new Date(year, month - 1, day);
+  if (
+    dateObj.getFullYear() !== year ||
+    dateObj.getMonth() !== month - 1 ||
+    dateObj.getDate() !== day
+  ) throw new Error("Date must be a valid date.");
+
+  return dateStr.trim();;
+}
 
 export const checkReplyArr = async (replyArr) => {
   /*
@@ -135,3 +156,26 @@ export const checkReplyArr = async (replyArr) => {
 
   return replyArr;
 }
+
+export const checkEmail = (email) => {
+  if (!email) throw new Error("Email not provided");
+  if (typeof email !== "string" || email.trim().length === 0)
+    throw new Error("Email must be a non-empty string");
+
+  //emails have to be in valid email format
+  //I looked it up -->
+    //Local Part (before @): Max 64 characters, can include letters, numbers, and some special characters (e.g., ., _, %, +).
+    //Domain Part (after @): Max 255 characters, includes domain name and extension.
+    //Limitations: Cannot have consecutive dots (..), start/end with a dot, or have spaces.
+  const emailRegex = /^[a-zA-Z0-9._%+-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/;
+  if (/\.\./.test(email.trim())) throw new Error("Email cannot contain consecutive dots. ");
+  if (email.trim().startsWith(".") || email.trim().endsWith(".")) throw new Error("Email cannot start or end with a dot. ");
+  if (!emailRegex.test(email.trim())) throw new Error("Email must be a valid email address. ");
+
+  return email.trim();
+}
+
+//for if we add/need user authentication later
+export const checkUser = (username) => { } //must be unique
+
+export const checkPassword = (username) => { }

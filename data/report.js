@@ -1,6 +1,8 @@
 import { reports } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 
+import { checkId, checkDate } from "../helpers.js";
+
 export const createReport = async (
   username,
   date,
@@ -9,15 +11,9 @@ export const createReport = async (
   attachments,
   trailName,
 ) => {
-  const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-  if (!dateRegex.test(date))
-    throw new Error("Date is not in proper MM/DD/YYYY format");
+  date = checkDate(date);
 
-  const dateObj = new Date(date);
-  if (!isNaN(dateObj) || dateObj.getMonth + 1 !== date.slice(0, 2))
-    throw new Error("Invalid date");
-
-  const severityScale = ["low", "moderate", "high", "citical"];
+  const severityScale = ["low", "moderate", "high", "critical"];
   if (!severityScale.includes(severity.toLowerCase().trim()))
     throw new Error("Severity level not on the scale");
 
@@ -36,11 +32,11 @@ export const createReport = async (
   const reportCollection = await reports();
 
   const insertInfo = await reportCollection.insertOne(newReport);
-  if (!insertInfo.acknowledged || insertInfo.insertedId) {
+  if (!insertInfo.acknowledged || !insertInfo.insertedId) {
     throw new Error("Failed to add report to database.");
   }
 
-  const report = getReportById(insertInfo.insertedId.toString());
+  const report = await getReportById(insertInfo.insertedId.toString());
 
   return report;
 };

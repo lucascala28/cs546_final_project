@@ -1,6 +1,8 @@
 import { trails } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 
+import { checkId } from "../helpers.js";
+
 export const createNewTrail = async (
     name,
     surface,
@@ -28,7 +30,7 @@ export const createNewTrail = async (
         throw new Error("Failed to add trail to database.");
     }
 
-    const trail = getTrailById(insertInfo.insertedId.toString());
+    const trail = await getTrailById(insertInfo.insertedId.toString());
 
     return trail;
 };
