@@ -3,5 +3,5 @@
 
 .env
 .DS_Store
-.csv
+*.csv
 package-lock.json
