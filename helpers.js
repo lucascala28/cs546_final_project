@@ -172,10 +172,26 @@ export const checkEmail = (email) => {
   if (email.trim().startsWith(".") || email.trim().endsWith(".")) throw new Error("Email cannot start or end with a dot. ");
   if (!emailRegex.test(email.trim())) throw new Error("Email must be a valid email address. ");
 
-  return email.trim();
+  return email.trim().toLowerCase();
 }
 
-//for if we add/need user authentication later
-export const checkUser = (username) => { } //must be unique
+export const checkUser = (username) => {
+  if (!username) throw new Error('Username not provided');
+  if (typeof username !== 'string' || username.trim().length === 0)
+    throw new Error('Username must be a non-empty string');
+  if (!/^[a-zA-Z0-9.\-]{3,20}$/.test(username.trim()))
+    throw new Error(
+      'Username must be 3–20 characters and contain only letters, numbers, periods, or hyphens'
+    );
+  return username.trim();
+};
 
-export const checkPassword = (username) => { }
+export const checkPassword = (password) => {
+  if (!password) throw new Error('Password not provided');
+  if (typeof password !== 'string') throw new Error('Password must be a string');
+  if (password.length < 8) throw new Error('Password must be at least 8 characters');
+  if (!/[A-Z]/.test(password)) throw new Error('Password must contain at least one uppercase letter');
+  if (!/[a-z]/.test(password)) throw new Error('Password must contain at least one lowercase letter');
+  if (!/[0-9]/.test(password)) throw new Error('Password must contain at least one number');
+  return password;
+};
