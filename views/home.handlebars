@@ -1,0 +1,8 @@
+<h1>NJ Trail Monitor</h1>
+{{#if user}}
+  <p>Welcome back, {{user.username}}!</p>
+  <p><a href="/profile">Profile</a> | <a href="/favorites">Favorites</a> | <a href="/logout">Log out</a></p>
+{{else}}
+  <p><a href="/login">Log in</a> or <a href="/signup">sign up</a> to get started.</p>
+{{/if}}
+<p><a href="/trails">Browse trails</a></p>
