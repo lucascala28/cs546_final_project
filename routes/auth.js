@@ -1,7 +1,12 @@
 import {Router} from 'express';
+import xss from 'xss';
+import bcrypt from 'bcrypt';
+import {createUser, getUserByEmail} from '../data/user.js';
+import {checkUser, checkPassword, checkEmail} from '../helpers.js';
+
 const router = Router();
 
-// Landing page
+// Landing / home — public
 router.get('/', async (req, res) => {
   return res.render('home', {
     title: 'NJ Trail Monitor',
@@ -9,38 +14,120 @@ router.get('/', async (req, res) => {
   });
 });
 
-// Login page 
-router.get('/login', async (req, res) => {
-  return res.render('login', {title: 'Log In'});
-});
 
-router.post('/login', async (req, res) => {
-  return res.status(501).send('Login POST not yet implemented');
-});
+// Login page 
+router
+  .route('/login')
+  .get(async (req, res) => {
+    return res.render('login', {title: 'Log In'});
+  })
+  .post(async (req, res) => {
+    // XSS sanitize all inputs from req.body
+    const email = xss(req.body.email);
+    const password = xss(req.body.password);
+
+    // Validate format
+    try {
+      checkEmail(email);
+    } catch (e) {
+      return res.status(400).render('login', {title: 'Log In', error: e.message});
+    }
+
+    if (!password || typeof password !== 'string' || password.trim().length === 0) {
+      return res.status(400).render('login', {title: 'Log In', error: 'Password is required'});
+    }
+
+    // Look up user
+    let user;
+    try {
+      user = await getUserByEmail(email);
+    } catch (e) {
+      return res.status(400).render('login', {title: 'Log In', error: 'Invalid email or password'});
+    }
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(400).render('login', {title: 'Log In', error: 'Invalid email or password'});
+    }
+
+    // Set session 
+    req.session.user = {
+      userId: user._id.toString(),
+      username: user.username,
+      email: user.email,
+      role: user.role
+    };
+
+    return res.redirect('/');
+  });
 
 // Signup page 
-router.get('/signup', async (req, res) => {
-  return res.render('signup', {title: 'Sign Up'});
-});
+router
+  .route('/signup')
+  .get(async (req, res) => {
+    return res.render('signup', {title: 'Sign Up'});
+  })
+  .post(async (req, res) => {
+    // XSS sanitize all inputs from req.body
+    const username = xss(req.body.username);
+    const email = xss(req.body.email);
+    const password = xss(req.body.password);
 
-router.post('/signup', async (req, res) => {
-  return res.status(501).send('Signup POST not yet implemented');
-});
+    // Validate each field
+    let validUsername, validEmail, validPassword;
+
+    try {
+      validUsername = checkUser(username);
+    } catch (e) {
+      return res.status(400).render('signup', {title: 'Sign Up', error: e.message});
+    }
+
+    try {
+      validEmail = checkEmail(email);
+    } catch (e) {
+      return res.status(400).render('signup', {title: 'Sign Up', error: e.message});
+    }
+
+    try {
+      validPassword = checkPassword(password);
+    } catch (e) {
+      return res.status(400).render('signup', {title: 'Sign Up', error: e.message});
+    }
+
+    // Create user 
+    let newUser;
+    try {
+      newUser = await createUser(validEmail, validPassword, validUsername);
+    } catch (e) {
+      // Duplicate email/username will surface here as a DB error
+      return res.status(400).render('signup', {title: 'Sign Up', error: e.message});
+    }
+
+    // Log them in immediately after successful signup
+    req.session.user = {
+      userId: newUser._id.toString(),
+      username: newUser.username,
+      email: newUser.email,
+      role: newUser.role
+    };
+
+    return res.redirect('/');
+  });
 
 // Logout — destroys session and clears cookies
 router.get('/logout', async (req, res) => {
   req.session.destroy(() => {
     res.clearCookie('AwesomeTrailApp');
-    return res.redirect('/');
+    return res.redirect('/login');
   });
 });
 
-// Profile 
+// Profile (protected by M4 in app.js) — Molly will build out
 router.get('/profile', async (req, res) => {
   return res.status(501).send('Profile page not yet implemented');
 });
 
-// Favorites 
+// Favorites (protected by M4) — Ian will build out
 router.get('/favorites', async (req, res) => {
   return res.status(501).send('Favorites page not yet implemented');
 });
