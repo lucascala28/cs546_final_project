@@ -4,6 +4,31 @@ will be able to report on status on trails they come across. (e.g. “Trail in E
 tree”), and people can update if the issue has been resolved. It will include visualization of all
 trails with colors indicating status and type.
 
+## Running the project
+
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Start the server
+
+```bash
+npm start
+```
+
+Then visit `http://localhost:3000`.
+
+### Import trail dataset / seed trails
+
+This project includes a CSV import script. Download the dataset CSV, move it into the project root,
+and rename it to `trail_data.csv`, then run:
+
+```bash
+npm run fill
+```
+
 #### Group Members
 Brayden Abo, Molly DiCampli, Luca Emilio Scala, Ian Nevins and Melissa Rich
 
