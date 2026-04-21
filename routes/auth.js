@@ -6,11 +6,14 @@ import {checkUser, checkPassword, checkEmail} from '../helpers.js';
 
 const router = Router();
 
-// Landing / home — public
+// Landing / home — redirect guests to login, show dashboard to authenticated users
 router.get('/', async (req, res) => {
+  if (!req.session.user) return res.redirect('/login');
+  const u = req.session.user;
   return res.render('home', {
     title: 'NJ Trail Monitor',
-    user: req.session.user || null
+    user: u,
+    isAdmin: u.role === 'admin'
   });
 });
 
@@ -19,7 +22,7 @@ router.get('/', async (req, res) => {
 router
   .route('/login')
   .get(async (req, res) => {
-    return res.render('login', {title: 'Log In'});
+    return res.render('login', {title: 'Log In', layout: 'auth'});
   })
   .post(async (req, res) => {
     // XSS sanitize all inputs from req.body
@@ -30,11 +33,11 @@ router
     try {
       checkEmail(email);
     } catch (e) {
-      return res.status(400).render('login', {title: 'Log In', error: e.message});
+      return res.status(400).render('login', {title: 'Log In', layout: 'auth', error: e.message});
     }
 
     if (!password || typeof password !== 'string' || password.trim().length === 0) {
-      return res.status(400).render('login', {title: 'Log In', error: 'Password is required'});
+      return res.status(400).render('login', {title: 'Log In', layout: 'auth', error: 'Password is required'});
     }
 
     // Look up user
@@ -42,12 +45,12 @@ router
     try {
       user = await getUserByEmail(email);
     } catch (e) {
-      return res.status(400).render('login', {title: 'Log In', error: 'Invalid email or password'});
+      return res.status(400).render('login', {title: 'Log In', layout: 'auth', error: 'Invalid email or password'});
     }
 
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      return res.status(400).render('login', {title: 'Log In', error: 'Invalid email or password'});
+      return res.status(400).render('login', {title: 'Log In', layout: 'auth', error: 'Invalid email or password'});
     }
 
     // Set session 
@@ -65,7 +68,7 @@ router
 router
   .route('/signup')
   .get(async (req, res) => {
-    return res.render('signup', {title: 'Sign Up'});
+    return res.render('signup', {title: 'Sign Up', layout: 'auth'});
   })
   .post(async (req, res) => {
     // XSS sanitize all inputs from req.body
@@ -79,19 +82,19 @@ router
     try {
       validUsername = checkUser(username);
     } catch (e) {
-      return res.status(400).render('signup', {title: 'Sign Up', error: e.message});
+      return res.status(400).render('signup', {title: 'Sign Up', layout: 'auth', error: e.message});
     }
 
     try {
       validEmail = checkEmail(email);
     } catch (e) {
-      return res.status(400).render('signup', {title: 'Sign Up', error: e.message});
+      return res.status(400).render('signup', {title: 'Sign Up', layout: 'auth', error: e.message});
     }
 
     try {
       validPassword = checkPassword(password);
     } catch (e) {
-      return res.status(400).render('signup', {title: 'Sign Up', error: e.message});
+      return res.status(400).render('signup', {title: 'Sign Up', layout: 'auth', error: e.message});
     }
 
     // Create user 
@@ -99,8 +102,7 @@ router
     try {
       newUser = await createUser(validEmail, validPassword, validUsername);
     } catch (e) {
-      // Duplicate email/username will surface here as a DB error
-      return res.status(400).render('signup', {title: 'Sign Up', error: e.message});
+      return res.status(400).render('signup', {title: 'Sign Up', layout: 'auth', error: e.message});
     }
 
     // Log them in immediately after successful signup
