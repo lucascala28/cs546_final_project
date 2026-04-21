@@ -73,6 +73,11 @@ app.use('/reports/new', (req, res, next) => {
   next();
 });
 
+app.use('/trails', (req, res, next) => {
+  if (!req.session.user) return res.redirect('/login');
+  next();
+});
+
 // Admin-only protection for /admin 
 app.use('/admin', (req, res, next) => {
   if (!req.session.user) return res.redirect('/login');
