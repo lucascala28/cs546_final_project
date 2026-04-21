@@ -5,8 +5,7 @@ const router = Router();
 // Melissa's page
 router.get('/', async (req, res) => {
   return res.render('admin', {
-    title: 'Admin Dashboard',
-    user: req.session.user
+    title: 'Admin Dashboard'
   });
 });
 

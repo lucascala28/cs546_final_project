@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node app.js",
+    "seed": "node seed.js",
     "fill": "node parse_csv.js"
   },
   "repository": {

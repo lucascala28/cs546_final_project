@@ -1,0 +1,17 @@
+<nav class="site-nav">
+  <a href="/" class="brand">NJ Trail Monitor</a>
+  <div class="nav-links">
+    {{#if user}}
+      <a href="/trails">Browse Trails</a>
+      {{#if isAdmin}}
+        <a href="/admin">Admin</a>
+      {{/if}}
+      <a href="/profile">{{user.username}}</a>
+      <a href="/logout" class="btn-nav">Log out</a>
+    {{else}}
+      <a href="/login">Log in</a>
+      <a href="/signup" class="btn-nav">Sign up</a>
+    {{/if}}
+  </div>
+</nav>
+
