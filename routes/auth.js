@@ -9,11 +9,8 @@ const router = Router();
 // Landing / home — redirect guests to login, show dashboard to authenticated users
 router.get('/', async (req, res) => {
   if (!req.session.user) return res.redirect('/login');
-  const u = req.session.user;
   return res.render('home', {
-    title: 'NJ Trail Monitor',
-    user: u,
-    isAdmin: u.role === 'admin'
+    title: 'NJ Trail Monitor'
   });
 });
 
