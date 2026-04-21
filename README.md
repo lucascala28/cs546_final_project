@@ -29,6 +29,14 @@ and rename it to `trail_data.csv`, then run:
 npm run fill
 ```
 
+### Seed an admin user
+Username: admin / Email: admin@stevens.edu / Password: Cs546#2026
+This user is created in mongodb which allows access to all routes
+```bash
+npm run seed
+```
+
+
 #### Group Members
 Brayden Abo, Molly DiCampli, Luca Emilio Scala, Ian Nevins and Melissa Rich
 
