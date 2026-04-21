@@ -11,6 +11,25 @@ body {
   min-height: 100vh;
 }
 
+/* Temporary scaffolding css, remove when all pages implemented */
+main.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.page-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+
+.page-desc {
+  color: #555;
+  line-height: 1.6;
+}
+
 /* ── Top nav ── */
 .site-nav {
   background: #fff;

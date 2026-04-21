@@ -123,12 +123,16 @@ router.get('/logout', async (req, res) => {
 
 // Profile (protected by M4 in app.js) — Molly will build out
 router.get('/profile', async (req, res) => {
-  return res.status(501).send('Profile page not yet implemented');
+  return res.render('profile', {
+    title: 'Profile'
+  });
 });
 
 // Favorites (protected by M4) — Ian will build out
 router.get('/favorites', async (req, res) => {
-  return res.status(501).send('Favorites page not yet implemented');
+  return res.render('favorites', {
+    title: 'Favorites'
+  });
 });
 
 export default router;
