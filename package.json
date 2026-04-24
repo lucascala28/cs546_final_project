@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node app.js",
     "seed": "node seed.js",
-    "fill": "node parse_csv.js"
+    "fill": "node parse_csv.js --aggregate",
+    "fill:segments": "node parse_csv.js"
   },
   "repository": {
     "type": "git",
