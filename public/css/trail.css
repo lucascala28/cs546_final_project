@@ -1,0 +1,45 @@
+.row {
+  margin-top: 14px;
+}
+
+.section .card p {
+  line-height: 1.55;
+}
+
+.photos a {
+  display: block;
+}
+
+.photos a:focus {
+  outline: 2px solid #111;
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+.photos img {
+  background: #fafafa;
+}
+
+.card textarea {
+  min-height: 88px;
+}
+
+.card textarea:focus {
+  border-color: #999;
+}
+
+.h2 {
+  padding-top: 2px;
+}
+
+.small {
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 520px) {
+  .row form,
+  .row a.btn {
+    width: 100%;
+  }
+}
+

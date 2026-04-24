@@ -55,7 +55,8 @@ router
       userId: user._id.toString(),
       username: user.username,
       email: user.email,
-      role: user.role
+      role: user.role,
+      favoriteTrailIds: Array.isArray(user.favoriteTrailIds) ? user.favoriteTrailIds : []
     };
 
     return res.redirect('/');
@@ -107,7 +108,8 @@ router
       userId: newUser._id.toString(),
       username: newUser.username,
       email: newUser.email,
-      role: newUser.role
+      role: newUser.role,
+      favoriteTrailIds: Array.isArray(newUser.favoriteTrailIds) ? newUser.favoriteTrailIds : []
     };
 
     return res.redirect('/');
@@ -129,10 +131,4 @@ router.get('/profile', async (req, res) => {
 });
 
 // Favorites (protected by M4) — Ian will build out
-router.get('/favorites', async (req, res) => {
-  return res.render('favorites', {
-    title: 'Favorites'
-  });
-});
-
 export default router;

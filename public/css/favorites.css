@@ -1,0 +1,41 @@
+.page-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.grid {
+  margin-top: 12px;
+}
+
+.trail-card {
+  border-style: dashed;
+}
+
+.trail-card:hover {
+  border-style: solid;
+}
+
+.trail-name {
+  color: #0f172a;
+}
+
+.page-desc {
+  max-width: 60ch;
+}
+
+.trail-meta {
+  opacity: 0.95;
+}
+
+.trail-meta strong {
+  font-weight: 800;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trail-card {
+    transition: none;
+  }
+}
+

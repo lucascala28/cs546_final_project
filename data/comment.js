@@ -29,3 +29,13 @@ export const getCommentById = async (id) => {
   commentMatch._id = commentMatch._id.toString();
   return commentMatch;
 }
+
+export const getCommentsForTrail = async (trailId) => {
+  trailId = checkId(trailId);
+  const commentCollection = await comments();
+  const list = await commentCollection
+    .find({ trailId })
+    .sort({ _id: -1 })
+    .toArray();
+  return list.map((c) => ({ ...c, _id: c._id.toString() }));
+};

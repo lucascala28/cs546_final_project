@@ -46,3 +46,66 @@ export const getTrailById = async (id) => {
     trailMatch._id = trailMatch._id.toString();
     return trailMatch;
 };
+
+export const getAllTrails = async () => {
+  const trailCollection = await trails();
+  const list = await trailCollection
+    .find({}, { projection: { name: 1, location: 1, surface: 1, type: 1, length: 1, difficulty: 1, status: 1 } })
+    .sort({ name: 1 })
+    .toArray();
+  return list.map((t) => ({ ...t, _id: t._id.toString() }));
+};
+
+export const searchTrailsByName = async (query) => {
+  if (typeof query !== "string") return getAllTrails();
+  const q = query.trim();
+  if (!q) return getAllTrails();
+
+  const trailCollection = await trails();
+  const list = await trailCollection
+    .find(
+      { name: { $regex: q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" } },
+      { projection: { name: 1, location: 1, surface: 1, type: 1, length: 1, difficulty: 1, status: 1 } }
+    )
+    .sort({ name: 1 })
+    .limit(200)
+    .toArray();
+  return list.map((t) => ({ ...t, _id: t._id.toString() }));
+};
+
+export const getTrailsByIds = async (trailIds) => {
+  if (!Array.isArray(trailIds)) throw new Error("trailIds must be an array");
+  const ids = trailIds.map((id) => new ObjectId(checkId(id)));
+  const trailCollection = await trails();
+  const list = await trailCollection
+    .find({ _id: { $in: ids } }, { projection: { name: 1, location: 1, surface: 1, type: 1, length: 1, difficulty: 1, status: 1 } })
+    .toArray();
+  const byId = new Map(list.map((t) => [t._id.toString(), { ...t, _id: t._id.toString() }]));
+  return trailIds.map((id) => byId.get(id)).filter(Boolean);
+};
+
+export const addCommentToTrail = async (trailId, commentId) => {
+  trailId = checkId(trailId);
+  commentId = checkId(commentId);
+
+  const trailCollection = await trails();
+  const updateInfo = await trailCollection.updateOne(
+    { _id: new ObjectId(trailId) },
+    { $addToSet: { commentIds: commentId } }
+  );
+  if (updateInfo.matchedCount === 0) throw new Error("Trail not found");
+  return true;
+};
+
+export const addReportToTrail = async (trailId, reportId) => {
+  trailId = checkId(trailId);
+  reportId = checkId(reportId);
+
+  const trailCollection = await trails();
+  const updateInfo = await trailCollection.updateOne(
+    { _id: new ObjectId(trailId) },
+    { $addToSet: { reportIds: reportId } }
+  );
+  if (updateInfo.matchedCount === 0) throw new Error("Trail not found");
+  return true;
+};

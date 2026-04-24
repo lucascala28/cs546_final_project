@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{#if title}}{{title}} | {{/if}}NJ Trail Monitor</title>
     <link rel="stylesheet" href="/css/main.css" />
+    {{#if pageCss}}
+      <link rel="stylesheet" href="/css/{{pageCss}}" />
+    {{/if}}
   </head>
   <body>
     {{>navbar}}

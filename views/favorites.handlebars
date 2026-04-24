@@ -1,5 +1,18 @@
 <main class="page">
   <h1 class="page-title">Favorites</h1>
-  <p class="page-desc">Ian implements this.</p>
+
+  {{#if trails.length}}
+    <div class="grid">
+      {{#each trails}}
+        <a class="trail-card" href="/trails/{{_id}}">
+          <div class="trail-name">{{name}}</div>
+          <div class="trail-meta">{{location}} • {{type}} • {{surface}}</div>
+          <div class="trail-meta">Length: {{length}} mi • Difficulty: {{difficulty}} • Status: {{status}}</div>
+        </a>
+      {{/each}}
+    </div>
+  {{else}}
+    <p class="page-desc">No favorites yet. Browse trails and add some.</p>
+  {{/if}}
 </main>
 
