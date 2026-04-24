@@ -12,6 +12,23 @@
     <a class="btn btn-dark" href="/reports/new?trailId={{trail._id}}">Create Report</a>
   </div>
 
+  {{#if trail.geometry}}
+  <section class="section">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <div id="trail-map"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+      const geo = {{{geometryJson}}};
+      const map = L.map('trail-map');
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+      const layer = L.geoJSON(geo, { style: { color: '#2d6a4f', weight: 3 } }).addTo(map);
+      map.fitBounds(layer.getBounds(), { padding: [16, 16] });
+    </script>
+  </section>
+  {{/if}}
+
   <section class="section">
     <h2 class="h2">Reports</h2>
     {{#if reports.length}}

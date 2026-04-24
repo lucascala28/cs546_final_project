@@ -33,6 +33,7 @@ router.get('/:id', async (req, res) => {
       title: trail.name,
       pageCss: 'trail.css',
       trail,
+      geometryJson: JSON.stringify(trail.geometry ?? null),
       comments,
       reports,
       isFavorited
