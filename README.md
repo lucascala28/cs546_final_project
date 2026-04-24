@@ -26,7 +26,10 @@ This project includes a CSV import script. Download the dataset CSV, move it int
 and rename it to `trail_data.csv`, then run:
 
 ```bash
-npm run fill
+# Import trails (aggregated by segment)
+npm run fill 
+# Import trails by segments (No real need for this though)
+npm run fill:segments
 ```
 
 ### Seed an admin user
