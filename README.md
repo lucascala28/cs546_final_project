@@ -22,13 +22,15 @@ Then visit `http://localhost:3000`.
 
 ### Import trail dataset / seed trails
 
-This project includes a CSV import script. Download the dataset CSV, move it into the project root,
-and rename it to `trail_data.csv`, then run:
+This project imports trails from the dataset **GeoJSON** (includes geometry for maps).
+https://gisdata-njdep.opendata.arcgis.com/datasets/statewide-trails-in-new-jersey-2
+
 
 ```bash
-# Import trails (aggregated by segment)
-npm run fill 
-# Import trails by segments (No real need for this though)
+# Download the dataset GeoJSON, move to project root, and rename it to trail_data.geojson
+npm run fill
+
+# GeoJSON import by segments, no real need for this but if need raw segments (one document per GeoJSON feature)
 npm run fill:segments
 ```
 

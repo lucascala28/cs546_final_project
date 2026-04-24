@@ -6,3 +6,4 @@
 *.csv
 package-lock.json
 public/uploads/**
+trail_data.geojson
