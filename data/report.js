@@ -4,25 +4,33 @@ import { ObjectId } from "mongodb";
 import { checkId, checkDate } from "../helpers.js";
 
 export const createReport = async (
+  trailId,
   username,
   date,
   severity,
   description,
   attachments,
-  trailName,
+  trailName
 ) => {
+  trailId = checkId(trailId);
   date = checkDate(date);
+
+  if (typeof username !== "string" || username.trim().length === 0) throw new Error("Username is required");
+  if (typeof severity !== "string" || severity.trim().length === 0) throw new Error("Severity is required");
+  if (typeof description !== "string" || description.trim().length === 0) throw new Error("Description is required");
+  if (typeof trailName !== "string" || trailName.trim().length === 0) throw new Error("Trail name is required");
 
   const severityScale = ["low", "moderate", "high", "critical"];
   if (!severityScale.includes(severity.toLowerCase().trim()))
     throw new Error("Severity level not on the scale");
 
   const newReport = {
+    trailId,
     username: username.trim(),
     date: date,
     severity: severity.trim(),
     description: description.trim(),
-    attachments: attachments, // array of images user provides
+    attachments: Array.isArray(attachments) ? attachments : [], // array of images user provides
     trailName: trailName.trim(),
     votes: 0, // initialized to 0 but can be upvoted/downvoted
     comments: [], // initialzed to an empty array as there will be no comments on creation
@@ -53,3 +61,12 @@ export const getReportById = async (id) => {
   return reportMatch;
 }
 
+export const getReportsForTrail = async (trailId) => {
+  trailId = checkId(trailId);
+  const reportCollection = await reports();
+  const list = await reportCollection
+    .find({ trailId })
+    .sort({ _id: -1 })
+    .toArray();
+  return list.map((r) => ({ ...r, _id: r._id.toString() }));
+};

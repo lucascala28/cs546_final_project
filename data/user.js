@@ -2,7 +2,8 @@ import bcrypt from "bcrypt";
 import { users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 
-import { checkId, checkEmail } from "../helpers.js"; 
+import { checkId, checkEmail } from "../helpers.js";
+import { getTrailsByIds } from "./trail.js";
 
 const SALT_ROUNDS = 12; // number of hashing iterations basically the higher the more secure but the more expensive
 
@@ -68,4 +69,38 @@ export const getUserByEmail = async (email) => {
 
     userMatch._id = userMatch._id.toString();
     return userMatch;
+};
+
+export const addFavoriteTrail = async (userId, trailId) => {
+  userId = checkId(userId);
+  trailId = checkId(trailId);
+
+  const userCollection = await users();
+  const updateInfo = await userCollection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $addToSet: { favoriteTrailIds: trailId } }
+  );
+  if (updateInfo.matchedCount === 0) throw new Error("User not found");
+  return true;
+};
+
+export const removeFavoriteTrail = async (userId, trailId) => {
+  userId = checkId(userId);
+  trailId = checkId(trailId);
+
+  const userCollection = await users();
+  const updateInfo = await userCollection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $pull: { favoriteTrailIds: trailId } }
+  );
+  if (updateInfo.matchedCount === 0) throw new Error("User not found");
+  return true;
+};
+
+export const getFavoriteTrailsForUser = async (userId) => {
+  userId = checkId(userId);
+  const user = await getUserById(userId);
+  const ids = Array.isArray(user.favoriteTrailIds) ? user.favoriteTrailIds : [];
+  const trails = await getTrailsByIds(ids);
+  return trails;
 };

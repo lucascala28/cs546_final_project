@@ -1,0 +1,53 @@
+.search {
+  align-items: stretch;
+}
+
+.search input:focus {
+  border-color: #999;
+}
+
+.search button {
+  white-space: nowrap;
+}
+
+.grid {
+  margin-top: 16px;
+}
+
+.trail-card {
+  position: relative;
+}
+
+.trail-card::after {
+  content: "View";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 0.75rem;
+  color: #777;
+  background: #f3f3f3;
+  border: 1px solid #e7e7e7;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+.trail-card:hover::after {
+  color: #111;
+  background: #fff;
+}
+
+.trail-name {
+  font-size: 1rem;
+}
+
+.trail-meta + .trail-meta {
+  margin-top: 4px;
+}
+
+@media (max-width: 520px) {
+  .search {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+

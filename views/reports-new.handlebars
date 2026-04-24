@@ -1,0 +1,52 @@
+<main class="page">
+  <h1 class="page-title">Create Report</h1>
+
+  {{#if error}}
+    <p class="page-desc" style="color:#b00020">{{error}}</p>
+  {{/if}}
+
+  <form class="card" method="POST" action="/reports/new" enctype="multipart/form-data">
+    <label class="field">
+      <span>Trail</span>
+      {{#if trail}}
+        <input type="hidden" name="trailId" value="{{trail._id}}" />
+        <input type="text" value="{{trail.name}}" disabled />
+      {{else}}
+        <select name="trailId" required>
+          <option value="" selected disabled>Select a trail…</option>
+          {{#each trails}}
+            <option value="{{_id}}">{{name}} ({{location}})</option>
+          {{/each}}
+        </select>
+      {{/if}}
+    </label>
+
+    <label class="field">
+      <span>Date (MM/DD/YYYY)</span>
+      <input name="date" placeholder="04/22/2026" required pattern="\d{2}/\d{2}/\d{4}" maxlength="10" />
+    </label>
+
+    <label class="field">
+      <span>Severity</span>
+      <select name="severity" required>
+        <option value="low">low</option>
+        <option value="moderate">moderate</option>
+        <option value="high">high</option>
+        <option value="critical">critical</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Description</span>
+      <textarea name="description" rows="4" required minlength="5" maxlength="2000"></textarea>
+    </label>
+
+    <label class="field">
+      <span>Photos (up to 5)</span>
+      <input type="file" name="photos" accept="image/*" multiple />
+    </label>
+
+    <button class="btn btn-dark" type="submit">Submit report</button>
+  </form>
+</main>
+

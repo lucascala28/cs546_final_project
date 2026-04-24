@@ -5,3 +5,4 @@
 .DS_Store
 *.csv
 package-lock.json
+public/uploads/**
