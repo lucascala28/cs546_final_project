@@ -22,7 +22,10 @@ app.engine(
   'handlebars',
   exphbs.engine({
     defaultLayout: 'main',
-    partialsDir: path.join(__dirname, 'views', 'partials')
+    partialsDir: path.join(__dirname, 'views', 'partials'),
+    helpers: {
+      toFixed2: (n) => (typeof n === 'number' ? n.toFixed(2) : n)
+    }
   })
 );
 app.set('view engine', 'handlebars');

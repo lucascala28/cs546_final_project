@@ -12,7 +12,7 @@
         <a class="trail-card" href="/trails/{{_id}}">
           <div class="trail-name">{{name}}</div>
           <div class="trail-meta">{{location}} • {{type}} • {{surface}}</div>
-          <div class="trail-meta">Length: {{length}} mi • Difficulty: {{difficulty}} • Status: {{status}}</div>
+          <div class="trail-meta">Length: {{toFixed2 length}} mi • Difficulty: {{difficulty}} • Status: {{status}}</div>
         </a>
       {{/each}}
     {{else}}

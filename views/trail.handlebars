@@ -1,6 +1,6 @@
 <main class="page">
   <h1 class="page-title">{{trail.name}}</h1>
-  <p class="page-desc">{{trail.location}} • {{trail.type}} • {{trail.surface}} • {{trail.length}} mi • {{trail.difficulty}}</p>
+  <p class="page-desc">{{trail.location}} • {{trail.type}} • {{trail.surface}} • {{toFixed2 trail.length}} mi • {{trail.difficulty}}</p>
 
   <div class="row">
     <form method="POST" action="/favorites/toggle/{{trail._id}}?returnTo=/trails/{{trail._id}}">
