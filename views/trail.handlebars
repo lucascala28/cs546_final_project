@@ -35,6 +35,7 @@
       {{#each reports}}
         <div class="card">
           <div class="small">{{date}} • Severity: {{severity}} • by {{username}}</div>
+          {{#if resolved}}<span class="badge badge-resolved">Resolved</span>{{/if}}
           <p>{{description}}</p>
           {{#if attachments.length}}
             <div class="photos">
@@ -45,6 +46,21 @@
               {{/each}}
             </div>
           {{/if}}
+          <div class="report-actions">
+            <form method="POST" action="/reports/{{_id}}/upvote">
+              <button class="btn btn-outline" type="submit">▲ {{votes}}</button>
+            </form>
+            {{#if canModify}}
+              {{#unless resolved}}
+                <form method="POST" action="/reports/{{_id}}/resolve">
+                  <button class="btn btn-outline" type="submit">Resolve</button>
+                </form>
+              {{/unless}}
+              <form method="POST" action="/reports/{{_id}}/delete">
+                <button class="btn btn-outline" type="submit">Delete</button>
+              </form>
+            {{/if}}
+          </div>
         </div>
       {{/each}}
     {{else}}

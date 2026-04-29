@@ -109,3 +109,16 @@ export const addReportToTrail = async (trailId, reportId) => {
   if (updateInfo.matchedCount === 0) throw new Error("Trail not found");
   return true;
 };
+
+export const removeReportFromTrail = async (trailId, reportId) => {
+  trailId = checkId(trailId);
+  reportId = checkId(reportId);
+
+  const trailCollection = await trails();
+  const updateInfo = await trailCollection.updateOne(
+    { _id: new ObjectId(trailId) },
+    { $pull: { reportIds: reportId } }
+  );
+  if (updateInfo.matchedCount === 0) throw new Error("Trail not found");
+  return true;
+};

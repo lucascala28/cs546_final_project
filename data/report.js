@@ -70,3 +70,64 @@ export const getReportsForTrail = async (trailId) => {
     .toArray();
   return list.map((r) => ({ ...r, _id: r._id.toString() }));
 };
+
+export const deleteReport = async (id) => {
+  id = checkId(id);
+
+  const reportCollection = await reports();
+  const deleteInfo = await reportCollection.deleteOne({ _id: new ObjectId(id) });
+
+  if (deleteInfo.deletedCount === 0) throw new Error(`No report found with id ${id}`);
+
+  return true;
+};
+
+export const resolveReport = async (id) => {
+  // Report stays visible but gets marked as resolved
+  id = checkId(id);
+
+  const reportCollection = await reports();
+  const updateInfo = await reportCollection.updateOne({ _id: new ObjectId(id) }, { $set: { resolved: true } });
+
+  if (updateInfo.matchedCount === 0) throw new Error(`No report found with id ${id}`);
+
+  return await getReportById(id); // Updated report returned
+};
+
+export const upvoteReport = async (id, username) => {
+  id = checkId(id);
+  if (typeof username !== "string" || username.trim().length === 0) throw new Error("Username is required");
+
+  const reportCollection = await reports();
+  const report = await reportCollection.findOne({ _id: new ObjectId(id) });
+  if (!report) throw new Error(`No report found with id ${id}`);
+
+  const voters = report.voters || [];
+  const hasVoted = voters.includes(username.trim());
+
+  // Toggle upvotes
+  if (hasVoted) {
+    await reportCollection.updateOne({ _id: new ObjectId(id) }, { $inc: { votes: -1 }, $pull: { voters: username.trim() } });
+  } else {
+    await reportCollection.updateOne({ _id: new ObjectId(id) }, { $inc: { votes: 1 }, $addToSet: { voters: username.trim() } });
+  }
+
+  return await getReportById(id); // Updated report returned
+};
+
+export const getReportsByUsername = async (username) => {
+  if (typeof username !== "string" || username.trim().length === 0) throw new Error("Username is required");
+
+  const reportCollection = await reports();
+  const list = await reportCollection
+    .find({ username: username.trim() })
+    .sort({ _id: -1 }) // Newest reports listed first (-1)
+    .toArray(); // Array of all the posts made when id given matches
+
+    for (const r of list) {
+      r._id = r._id.toString();
+    }
+    
+    return list;
+};
+

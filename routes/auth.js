@@ -1,7 +1,8 @@
 import {Router} from 'express';
 import xss from 'xss';
 import bcrypt from 'bcrypt';
-import {createUser, getUserByEmail} from '../data/user.js';
+import {createUser, getUserByEmail, getUserById} from '../data/user.js';
+import { getReportsByUsername } from '../data/report.js';
 import {checkUser, checkPassword, checkEmail} from '../helpers.js';
 
 const router = Router();
@@ -123,11 +124,21 @@ router.get('/logout', async (req, res) => {
   });
 });
 
-// Profile (protected by M4 in app.js) — Molly will build out
+// Profile (protected by M4 in app.js)
 router.get('/profile', async (req, res) => {
-  return res.render('profile', {
-    title: 'Profile'
-  });
+  try {
+    const user = await getUserById(req.session.user.userId);
+    const reports = await getReportsByUsername(user.username);
+
+    return res.render('profile', {
+      title: 'Profile',
+      pageCss: 'profile.css',
+      user,
+      reports
+    });
+  } catch (e) {
+    return res.status(500).render('error', { error: e.message });
+  }
 });
 
 // Favorites (protected by M4) — Ian will build out

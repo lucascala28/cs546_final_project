@@ -24,7 +24,9 @@ router.get('/:id', async (req, res) => {
   try {
     const trail = await getTrailById(id);
     const comments = await getCommentsForTrail(id);
-    const reports = await getReportsForTrail(id);
+    const currentUsername = req.session.user?.username; // Added this for trail.handlebars, these 3 lines are for adding one extra field canModify to each object
+    const isAdmin = req.session.user?.role === 'admin'; // Added this for trail.handlebars
+    const reports = (await getReportsForTrail(id)).map(r => ({...r, canModify: r.username === currentUsername || isAdmin})); // Added this for trail.handlebars
     const isFavorited = Array.isArray(req.session.user?.favoriteTrailIds)
       ? req.session.user.favoriteTrailIds.includes(id)
       : false;

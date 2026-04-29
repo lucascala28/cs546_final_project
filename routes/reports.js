@@ -4,8 +4,8 @@ import multer from "multer";
 import path from "path";
 
 import { checkDate } from "../helpers.js";
-import { getAllTrails, getTrailById, addReportToTrail } from "../data/trail.js";
-import { createReport } from "../data/report.js";
+import { getAllTrails, getTrailById, addReportToTrail, removeReportFromTrail } from "../data/trail.js";
+import { createReport, getReportById, deleteReport, resolveReport, upvoteReport } from "../data/report.js";
 
 const router = Router();
 
@@ -114,6 +114,49 @@ router
       return res.redirect(`/trails/${trailId}`);
     } catch (e) {
       return res.status(400).render("reports-new", { title: "Create Report", pageCss: "reports.css", trail, error: e.message });
+    }
+  });
+  router.post("/:id/upvote", async (req, res) => {
+    if (!req.session.user) return res.redirect("/login");
+    
+    try {
+      const report = await upvoteReport(req.params.id, req.session.user.username);
+      return res.redirect(`/trails/${report.trailId}`);
+    } catch (e) {
+      return res.status(400).render("error", { error: e.message });
+    }
+  });
+  router.post("/:id/resolve", async (req, res) => {
+    if (!req.session.user) return res.redirect("/login");
+  
+    try {
+      const report = await getReportById(req.params.id);
+      
+      if (req.session.user.username !== report.username && req.session.user.role !== "admin") {
+        return res.status(403).render("error", { error: "You are not allowed to resolve this report" });
+      }
+
+      const updated = await resolveReport(req.params.id);
+      return res.redirect(`/trails/${updated.trailId}`);
+    } catch (e) {
+      return res.status(400).render("error", { error: e.message });
+    }
+  });
+  router.post("/:id/delete", async (req, res) => {
+    if (!req.session.user) return res.redirect("/login");
+    
+    try {
+      const report = await getReportById(req.params.id);
+      
+      if (req.session.user.username !== report.username && req.session.user.role !== "admin") {
+        return res.status(403).render("error", { error: "You are not allowed to delete this report" });
+      }
+      
+      await deleteReport(req.params.id);
+      await removeReportFromTrail(report.trailId, req.params.id);
+      return res.redirect(`/trails/${report.trailId}`);
+    } catch (e) {
+      return res.status(400).render("error", { error: e.message });
     }
   });
 
