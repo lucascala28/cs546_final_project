@@ -150,6 +150,8 @@ const main = async () => {
   console.log(
     `Inserted ${aggregated.length} aggregated trail entries (from ${shaped.length} segments)!`
   );
+
+  await trailCollection.createIndex({ geometry: '2dsphere' });
   await closeConnection();
 };
 

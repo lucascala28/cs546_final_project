@@ -1,6 +1,6 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import xss from 'xss';
-import { getAllTrails, searchTrailsByName, getTrailById, addCommentToTrail } from '../data/trail.js';
+import { getAllTrails, searchTrailsByName, getTrailById, addCommentToTrail, searchTrailsByLoc } from '../data/trail.js';
 import { createComment, getCommentsForTrail } from '../data/comment.js';
 import { getReportsForTrail } from '../data/report.js';
 const router = Router();
@@ -18,6 +18,21 @@ router.get('/', async (req, res) => {
   });
 });
 
+router.get('/nearby', async (req, res) => {
+  const { lat, lon, miles } = req.query;
+  if (!lat || !lon || !miles) return res.render('error', { error: 'Location data not provided' });
+
+  const nearbyTrails = await searchTrailsByLoc(lat, lon, miles);
+
+  return res.render('trails-index', {
+    title: 'Trails',
+    pageCss: 'trails.css',
+    q: 'Trails near me',
+    trails: nearbyTrails
+  });
+
+})
+
 // Trail detail page + comments
 router.get('/:id', async (req, res) => {
   const id = req.params.id;
@@ -26,7 +41,7 @@ router.get('/:id', async (req, res) => {
     const comments = await getCommentsForTrail(id);
     const currentUsername = req.session.user?.username; // Added this for trail.handlebars, these 3 lines are for adding one extra field canModify to each object
     const isAdmin = req.session.user?.role === 'admin'; // Added this for trail.handlebars
-    const reports = (await getReportsForTrail(id)).map(r => ({...r, canModify: r.username === currentUsername || isAdmin})); // Added this for trail.handlebars
+    const reports = (await getReportsForTrail(id)).map(r => ({ ...r, canModify: r.username === currentUsername || isAdmin })); // Added this for trail.handlebars
     const isFavorited = Array.isArray(req.session.user?.favoriteTrailIds)
       ? req.session.user.favoriteTrailIds.includes(id)
       : false;
@@ -75,5 +90,7 @@ router.post('/:id/comments', async (req, res) => {
     return res.status(400).render('error', { error: e.message });
   }
 });
+
+
 
 export default router;

@@ -86,7 +86,7 @@ export const checkDate = (dateStr) => {
     throw new Error("Date must be MM/DD/YYYY format.");
 
   //check if date is a valid day
-    //date code similar from lab4
+  //date code similar from lab4
   const [month, day, year] = dateStr.trim().split("/").map(Number);
   const dateObj = new Date(year, month - 1, day);
   if (
@@ -164,9 +164,9 @@ export const checkEmail = (email) => {
 
   //emails have to be in valid email format
   //I looked it up -->
-    //Local Part (before @): Max 64 characters, can include letters, numbers, and some special characters (e.g., ., _, %, +).
-    //Domain Part (after @): Max 255 characters, includes domain name and extension.
-    //Limitations: Cannot have consecutive dots (..), start/end with a dot, or have spaces.
+  //Local Part (before @): Max 64 characters, can include letters, numbers, and some special characters (e.g., ., _, %, +).
+  //Domain Part (after @): Max 255 characters, includes domain name and extension.
+  //Limitations: Cannot have consecutive dots (..), start/end with a dot, or have spaces.
   const emailRegex = /^[a-zA-Z0-9._%+-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,}$/;
   if (/\.\./.test(email.trim())) throw new Error("Email cannot contain consecutive dots. ");
   if (email.trim().startsWith(".") || email.trim().endsWith(".")) throw new Error("Email cannot start or end with a dot. ");
@@ -195,3 +195,5 @@ export const checkPassword = (password) => {
   if (!/[0-9]/.test(password)) throw new Error('Password must contain at least one number');
   return password;
 };
+
+

@@ -4,47 +4,47 @@ import { ObjectId } from "mongodb";
 import { checkId } from "../helpers.js";
 
 export const createNewTrail = async (
-    name,
-    surface,
-    type,
-    length,
-    difficulty,
-    location
+  name,
+  surface,
+  type,
+  length,
+  difficulty,
+  location
 ) => {
-    const newTrail = {
-        name: name.trim(),
-        surface: surface,
-        type: type,
-        length: length,
-        difficulty: difficulty,
-        location: location,
-        status: "open", // initialized to open and field should either always be "open" or "closed"
-        commentIds: [], // arrray of comment objects associated with trail
-        reportIds: [], // array of report ids associated with the trail
-    };
+  const newTrail = {
+    name: name.trim(),
+    surface: surface,
+    type: type,
+    length: length,
+    difficulty: difficulty,
+    location: location,
+    status: "open", // initialized to open and field should either always be "open" or "closed"
+    commentIds: [], // arrray of comment objects associated with trail
+    reportIds: [], // array of report ids associated with the trail
+  };
 
-    const trailCollection = await trails();
+  const trailCollection = await trails();
 
-    const insertInfo = await trailCollection.insertOne(newTrail);
-    if (!insertInfo.acknowledged || !insertInfo.insertedId) {
-        throw new Error("Failed to add trail to database.");
-    }
+  const insertInfo = await trailCollection.insertOne(newTrail);
+  if (!insertInfo.acknowledged || !insertInfo.insertedId) {
+    throw new Error("Failed to add trail to database.");
+  }
 
-    const trail = await getTrailById(insertInfo.insertedId.toString());
+  const trail = await getTrailById(insertInfo.insertedId.toString());
 
-    return trail;
+  return trail;
 };
 
 export const getTrailById = async (id) => {
-    id = checkId(id);
+  id = checkId(id);
 
-    const trailCollection = await trails();
-    const trailMatch = await trailCollection.findOne({ _id: new ObjectId(id) });
+  const trailCollection = await trails();
+  const trailMatch = await trailCollection.findOne({ _id: new ObjectId(id) });
 
-    if (!trailMatch) throw new Error(`No trail in database with id ${id}`);
+  if (!trailMatch) throw new Error(`No trail in database with id ${id}`);
 
-    trailMatch._id = trailMatch._id.toString();
-    return trailMatch;
+  trailMatch._id = trailMatch._id.toString();
+  return trailMatch;
 };
 
 export const getAllTrails = async () => {
@@ -72,6 +72,27 @@ export const searchTrailsByName = async (query) => {
     .toArray();
   return list.map((t) => ({ ...t, _id: t._id.toString() }));
 };
+
+export const searchTrailsByLoc = async (lat, lon, miles) => {
+  console.log(miles);
+  const metersPerMile = 1609.34;
+  const trailCollection = await trails();
+  const nearbyTrails = await trailCollection.find({
+    geometry: {
+      $near: {
+        $geometry: {
+          type: 'Point',
+          coordinates: [parseFloat(lon), parseFloat(lat)] // note: [lon, lat] order
+        },
+        $maxDistance: parseFloat(miles) * metersPerMile
+      }
+    }
+  }).toArray();
+
+  console.log(`Nearby trails length: ${nearbyTrails.length}`)
+
+  return nearbyTrails.map((t) => ({ ...t, _id: t._id.toString() }))
+}
 
 export const getTrailsByIds = async (trailIds) => {
   if (!Array.isArray(trailIds)) throw new Error("trailIds must be an array");
