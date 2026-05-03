@@ -8,10 +8,10 @@
   <button class="btn btn-dark" id="nearby-trails">Find trails near me</button>
   <label for="search-radius">Search radius</label>
   <select name="search-radius" id="search-radius">
-    <option value="5">5 miles</option>
-    <option value="10">10 miles</option>
-    <option value="20">20 miles</option>
-    <option value="50">50 miles</option>
+    <option value="5" {{#if (eq selectedMiles "5")}}selected{{/if}}>5 miles</option>
+    <option value="10" {{#if (eq selectedMiles "10")}}selected{{/if}}>10 miles</option>
+    <option value="20" {{#if (eq selectedMiles "20")}}selected{{/if}}>20 miles</option>
+    <option value="50" {{#if (eq selectedMiles "50")}}selected{{/if}}>50 miles</option>
   </select>
 
   <div class="grid">

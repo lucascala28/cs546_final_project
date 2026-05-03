@@ -1,77 +1,91 @@
-import { Router } from 'express';
-import xss from 'xss';
-import { getAllTrails, searchTrailsByName, getTrailById, addCommentToTrail, searchTrailsByLoc } from '../data/trail.js';
-import { createComment, getCommentsForTrail } from '../data/comment.js';
-import { getReportsForTrail } from '../data/report.js';
+import { Router } from "express";
+import xss from "xss";
+import {
+  getAllTrails,
+  searchTrailsByName,
+  getTrailById,
+  addCommentToTrail,
+  searchTrailsByLoc,
+} from "../data/trail.js";
+import { createComment, getCommentsForTrail } from "../data/comment.js";
+import { getReportsForTrail } from "../data/report.js";
 const router = Router();
 
 // Browse trails + search
-router.get('/', async (req, res) => {
-  const qRaw = typeof req.query.q === 'string' ? req.query.q : '';
+router.get("/", async (req, res) => {
+  const qRaw = typeof req.query.q === "string" ? req.query.q : "";
   const q = xss(qRaw).trim().slice(0, 80);
   const trails = q ? await searchTrailsByName(q) : await getAllTrails();
-  return res.render('trails-index', {
-    title: 'Trails',
-    pageCss: 'trails.css',
+  return res.render("trails-index", {
+    title: "Trails",
+    pageCss: "trails.css",
     q,
-    trails
+    trails,
   });
 });
 
-router.get('/nearby', async (req, res) => {
+router.get("/nearby", async (req, res) => {
   const { lat, lon, miles } = req.query;
-  if (!lat || !lon || !miles) return res.render('error', { error: 'Location data not provided' });
+  if (!lat || !lon || !miles)
+    return res.render("error", { error: "Location data not provided" });
 
   const nearbyTrails = await searchTrailsByLoc(lat, lon, miles);
 
-  return res.render('trails-index', {
-    title: 'Trails',
-    pageCss: 'trails.css',
-    q: 'Trails near me',
-    trails: nearbyTrails
+  return res.render("trails-index", {
+    title: "Trails",
+    pageCss: "trails.css",
+    q: `Trails in a ${miles} radius of Lat: ${lat} Lon: ${lon}`,
+    trails: nearbyTrails,
+    selectedMiles: miles,
   });
-
-})
+});
 
 // Trail detail page + comments
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
   const id = req.params.id;
   try {
     const trail = await getTrailById(id);
     const comments = await getCommentsForTrail(id);
     const currentUsername = req.session.user?.username; // Added this for trail.handlebars, these 3 lines are for adding one extra field canModify to each object
-    const isAdmin = req.session.user?.role === 'admin'; // Added this for trail.handlebars
-    const reports = (await getReportsForTrail(id)).map(r => ({ ...r, canModify: r.username === currentUsername || isAdmin })); // Added this for trail.handlebars
+    const isAdmin = req.session.user?.role === "admin"; // Added this for trail.handlebars
+    const reports = (await getReportsForTrail(id)).map((r) => ({
+      ...r,
+      canModify: r.username === currentUsername || isAdmin,
+    })); // Added this for trail.handlebars
     const isFavorited = Array.isArray(req.session.user?.favoriteTrailIds)
       ? req.session.user.favoriteTrailIds.includes(id)
       : false;
 
-    return res.render('trail', {
+    return res.render("trail", {
       title: trail.name,
-      pageCss: 'trail.css',
+      pageCss: "trail.css",
       trail,
       geometryJson: JSON.stringify(trail.geometry ?? null),
       comments,
       reports,
-      isFavorited
+      isFavorited,
     });
   } catch (e) {
-    return res.status(404).render('error', { error: 'Trail not found' });
+    return res.status(404).render("error", { error: "Trail not found" });
   }
 });
 
-router.post('/:id/comments', async (req, res) => {
+router.post("/:id/comments", async (req, res) => {
   const trailId = req.params.id;
   const content = xss(req.body.content).trim();
   const username = req.session.user?.username;
-  if (!username) return res.redirect('/login');
+  if (!username) return res.redirect("/login");
 
   if (!content || content.length < 1 || content.length > 500) {
-    return res.status(400).render('error', { error: 'Comment must be between 1 and 500 characters.' });
+    return res.status(400).render("error", {
+      error: "Comment must be between 1 and 500 characters.",
+    });
   }
 
   const now = new Date();
-  const date = `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${now.getFullYear()}`;
+  const date = `${String(now.getMonth() + 1).padStart(2, "0")}/${String(
+    now.getDate()
+  ).padStart(2, "0")}/${now.getFullYear()}`;
 
   const commentObj = {
     trailId,
@@ -79,7 +93,7 @@ router.post('/:id/comments', async (req, res) => {
     content,
     date,
     upvotes: 0,
-    replies: []
+    replies: [],
   };
 
   try {
@@ -87,10 +101,8 @@ router.post('/:id/comments', async (req, res) => {
     await addCommentToTrail(trailId, newComment._id.toString());
     return res.redirect(`/trails/${trailId}`);
   } catch (e) {
-    return res.status(400).render('error', { error: e.message });
+    return res.status(400).render("error", { error: e.message });
   }
 });
-
-
 
 export default router;
