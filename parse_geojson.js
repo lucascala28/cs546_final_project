@@ -13,12 +13,14 @@ const toNumberMiles = (v) => {
   return Number.isFinite(n) ? n : null;
 };
 
+/* DEPRACATED
 const baseTrailName = (name) => {
   if (!name || typeof name !== "string") return null;
   const trimmed = name.trim();
   if (!trimmed) return null;
   return trimmed.split(" - ")[0].trim();
 };
+*/
 
 const shouldAggregate =
   process.argv.includes("--aggregate") ||
@@ -82,7 +84,9 @@ const main = async () => {
 
   const grouped = new Map();
   for (const t of shaped) {
-    const key = baseTrailName(t.name) || t.name || "Unknown";
+    const key = t.name;
+    if (!key || !/^[a-zA-Z](?=.*[a-zA-Z]).{4,}$/.test(key)) continue; // added regex to make sure name is at least 5 characters with a letter somewhere in there and to make sure the key actually exists
+
     const g = grouped.get(key) || {
       name: key,
       length: 0,

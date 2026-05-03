@@ -26,9 +26,9 @@
     "express": "^5.2.1",
     "express-handlebars": "^8.0.7",
     "express-session": "^1.19.0",
-    "multer": "^2.0.2",
     "mongodb": "^7.1.1",
     "mongosh": "^2.8.2",
+    "multer": "^2.1.1",
     "xss": "^1.0.15"
   },
   "keywords": []
