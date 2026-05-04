@@ -137,3 +137,9 @@ export const getAllReports = async () => {
   return list.map((r) => ({ ...r, _id: r._id.toString() }));
 };
 
+export const getRecentReports = async (limit = 5) => {
+  const reportCollection = await reports();
+  const list = await reportCollection.find({}).sort({ _id: -1 }).limit(limit).toArray();
+  return list.map((r) => ({ ...r, _id: r._id.toString() }));
+};
+

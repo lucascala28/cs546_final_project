@@ -10,41 +10,173 @@
   font-weight: 700;
 }
 
-/* ── Stat summary row ── */
-.stats-row {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding: 0 24px 56px;
-  max-width: 640px;
-  margin: 0 auto;
+
+/* ── Community grid (two-column below stats) ── */
+.community-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 900px;
+  margin: 0 auto 56px;
+  padding: 0 24px;
 }
 
-.stat-card {
-  flex: 1 1 120px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+@media (max-width: 640px) {
+  .community-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.community-card {
   background: #fff;
   border: 1px solid #e7e7e7;
-  border-radius: 14px;
-  padding: 20px 16px;
-  gap: 4px;
+  border-radius: 16px;
+  padding: 20px 22px;
 }
 
-.stat-value {
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.04em;
+.community-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.community-card-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #888;
+  margin: 0;
+}
+
+.view-all-link {
+  font-size: 0.8rem;
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
+}
+
+.community-empty {
+  font-size: 0.875rem;
+  color: #aaa;
+  margin: 0;
+}
+
+.community-empty a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+/* ── Community Favorites list ── */
+.favorites-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.favorites-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fav-rank {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #bbb;
+  width: 16px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.fav-trail-name {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 600;
   color: #111;
-  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.stat-label {
+.fav-trail-name:hover {
+  color: #3b82f6;
+}
+
+.fav-count {
   font-size: 0.8rem;
   color: #888;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Recent Reports list ── */
+.reports-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reports-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.severity-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.dot-low      { background: #22c55e; }
+.dot-moderate { background: #f97316; }
+.dot-high     { background: #ef4444; }
+.dot-critical { background: #991b1b; }
+
+.reports-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.reports-trail-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111;
+  text-decoration: none;
+}
+
+.reports-trail-name:hover {
+  color: #3b82f6;
+}
+
+.reports-desc {
+  font-size: 0.8rem;
+  color: #666;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.reports-time {
+  font-size: 0.75rem;
+  color: #aaa;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
 }

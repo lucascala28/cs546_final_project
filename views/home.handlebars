@@ -7,17 +7,51 @@
   </div>
 </section>
 
-<div class="stats-row">
-  <div class="stat-card">
-    <span class="stat-value">{{favoritesCount}}</span>
-    <span class="stat-label">Favorites</span>
+<div class="community-grid">
+
+  <!-- Community Favorites -->
+  <div class="community-card">
+    <div class="community-card-header">
+      <h2 class="community-card-title">Community Favorites</h2>
+      <a href="/trails" class="view-all-link">View all &rarr;</a>
+    </div>
+    {{#if hasCommunityFavorites}}
+      <ol class="favorites-list">
+        {{#each communityFavorites}}
+          <li class="favorites-item">
+            <span class="fav-rank">{{rank}}</span>
+            <a href="/trails/{{trailId}}" class="fav-trail-name">{{trailName}}</a>
+            <span class="fav-count">&#9733; {{count}}</span>
+          </li>
+        {{/each}}
+      </ol>
+    {{else}}
+      <p class="community-empty">No favorites yet — <a href="/trails">browse trails</a> to get started.</p>
+    {{/if}}
   </div>
-  <div class="stat-card">
-    <span class="stat-value">{{reportsCount}}</span>
-    <span class="stat-label">Reports Filed</span>
+
+  <!-- Recent Reports -->
+  <div class="community-card">
+    <div class="community-card-header">
+      <h2 class="community-card-title">Recent Reports</h2>
+      <a href="/trails" class="view-all-link">View all &rarr;</a>
+    </div>
+    {{#if hasRecentReports}}
+      <ul class="reports-list">
+        {{#each recentReports}}
+          <li class="reports-item">
+            <span class="severity-dot {{severityClass}}"></span>
+            <div class="reports-item-body">
+              <a href="/trails/{{trailId}}" class="reports-trail-name">{{trailName}}</a>
+              <span class="reports-desc">&mdash; {{description}}</span>
+            </div>
+            <span class="reports-time">{{timeAgo}}</span>
+          </li>
+        {{/each}}
+      </ul>
+    {{else}}
+      <p class="community-empty">No reports yet — <a href="/reports/new">file the first one</a>.</p>
+    {{/if}}
   </div>
-  <div class="stat-card">
-    <span class="stat-value">{{badgesCount}}</span>
-    <span class="stat-label">Badges Earned</span>
-  </div>
+
 </div>

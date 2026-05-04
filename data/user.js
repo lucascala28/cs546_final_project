@@ -101,6 +101,31 @@ export const getFavoriteTrailsForUser = async (userId) => {
   userId = checkId(userId);
   const user = await getUserById(userId);
   const ids = Array.isArray(user.favoriteTrailIds) ? user.favoriteTrailIds : [];
-  const trails = await getTrailsByIds(ids);
-  return trails;
+  const trailList = await getTrailsByIds(ids);
+  return trailList;
+};
+
+export const getCommunityFavorites = async (limit = 5) => {
+  const userCollection = await users();
+
+  // Step 1: rank trail IDs by how many users favorited them (no ObjectId conversion needed here)
+  const ranked = await userCollection.aggregate([
+    { $unwind: '$favoriteTrailIds' },
+    { $group: { _id: '$favoriteTrailIds', count: { $sum: 1 } } },
+    { $sort: { count: -1, _id: 1 } },
+    { $limit: limit }
+  ]).toArray();
+
+  if (ranked.length === 0) return [];
+
+  // Step 2: resolve trail names using the existing helper
+  const ids = ranked.map((r) => r._id);
+  const trailDocs = await getTrailsByIds(ids);
+  const nameMap = new Map(trailDocs.map((t) => [t._id.toString(), t.name]));
+
+  return ranked.map((r) => ({
+    trailId: r._id,
+    trailName: nameMap.get(r._id) || 'Unknown Trail',
+    count: r.count
+  }));
 };
