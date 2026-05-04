@@ -10,8 +10,30 @@ const router = Router();
 // Landing / home — redirect guests to login, show dashboard to authenticated users
 router.get('/', async (req, res) => {
   if (!req.session.user) return res.redirect('/login');
+
+  let reportsCount = 0;
+  let badgesCount = 0;
+
+  try {
+    const [userReports, freshUser] = await Promise.all([
+      getReportsByUsername(req.session.user.username),
+      getUserById(req.session.user.userId)
+    ]);
+    reportsCount = userReports.length;
+    badgesCount = Array.isArray(freshUser.badges) ? freshUser.badges.length : 0;
+  } catch {
+    // stats are best-effort; don't block the page
+  }
+
   return res.render('home', {
-    title: 'NJ Trail Monitor'
+    title: 'NJ Trail Monitor',
+    pageCss: 'home.css',
+    username: req.session.user.username,
+    favoritesCount: Array.isArray(req.session.user.favoriteTrailIds)
+      ? req.session.user.favoriteTrailIds.length
+      : 0,
+    reportsCount,
+    badgesCount
   });
 });
 

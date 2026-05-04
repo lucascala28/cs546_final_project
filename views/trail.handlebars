@@ -29,6 +29,36 @@
   </section>
   {{/if}}
 
+  {{#if weather}}
+  <section class="section">
+    <h2 class="h2">Current Conditions</h2>
+    <div class="weather-card">
+      <div class="weather-current">
+        <img class="weather-icon" src="{{weather.current.icon}}" alt="{{weather.current.label}}" width="56" height="56" />
+        <div class="weather-main">
+          <span class="weather-temp">{{weather.current.tempF}}°F</span>
+          <span class="weather-label">{{weather.current.label}}</span>
+        </div>
+        <div class="weather-details">
+          <span>Feels like {{weather.current.feelsLikeF}}°F</span>
+          <span>Wind {{weather.current.windMph}} mph</span>
+          <span>Precip {{weather.current.precipIn}} in</span>
+        </div>
+      </div>
+      <div class="weather-forecast">
+        {{#each weather.forecast}}
+        <div class="forecast-day">
+          <span class="forecast-day-name">{{day}}</span>
+          <img class="forecast-icon" src="{{icon}}" alt="{{label}}" width="36" height="36" />
+          <span class="forecast-temps">{{highF}}° / {{lowF}}°</span>
+          <span class="forecast-precip">{{precipPct}}% rain</span>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </section>
+  {{/if}}
+
   <section class="section">
     <h2 class="h2">Reports</h2>
     {{#if reports.length}}
