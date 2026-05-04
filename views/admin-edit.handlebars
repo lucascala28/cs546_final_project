@@ -1,0 +1,38 @@
+<main class="page">
+  <h1 class="page-title">Edit Trail</h1>
+  <p class="page-desc">{{trail.location}}</p>
+    
+  <form class="card" method="POST" action="/admin/trails/{{trail._id}}/edit">
+    <label class="field">
+      <span>Name</span>
+      <input name="name" value="{{trail.name}}" required maxlength="200" />
+    </label>
+
+    <label class="field">
+      <span>Surface</span>
+      <input name="surface" value="{{trail.surface}}" maxlength="100" />
+    </label>
+
+    <label class="field">
+      <span>Difficulty</span>
+      <select name="difficulty">
+        <option {{#if (eq trail.difficulty 'easy')}}selected{{/if}}>easy</option>
+        <option {{#if (eq trail.difficulty 'moderate')}}selected{{/if}}>moderate</option>
+        <option {{#if (eq trail.difficulty 'hard')}}selected{{/if}}>hard</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Status</span>
+      <select name="status">
+        <option {{#if (eq trail.status 'open')}}selected{{/if}}>open</option>
+        <option {{#if (eq trail.status 'closed')}}selected{{/if}}>closed</option>
+      </select>
+    </label>
+
+    <div class="row">
+      <button class="btn btn-dark" type="submit">Save Changes</button>
+      <a class="btn btn-outline" href="/admin">Cancel</a>
+    </div>
+  </form>
+</main>

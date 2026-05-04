@@ -131,3 +131,9 @@ export const getReportsByUsername = async (username) => {
     return list;
 };
 
+export const getAllReports = async () => {
+  const reportCollection = await reports();
+  const list = await reportCollection.find({}).sort({ _id: -1 }).toArray(); //newest reports first
+  return list.map((r) => ({ ...r, _id: r._id.toString() }));
+};
+

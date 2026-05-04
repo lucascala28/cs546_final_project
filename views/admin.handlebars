@@ -1,4 +1,68 @@
 <main class="page">
   <h1 class="page-title">Admin Dashboard</h1>
-  <p class="page-desc">Melissa implements this.</p>
+
+  <section class="section">
+    <h2 class="h2">All Trails</h2>
+    {{#if trails.length}}
+    <input class="admin-search" type="text" id="trailSearch" placeholder="Search trails by name…" />
+    <div class="table-wrapper">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Surface</th>
+            <th>Difficulty</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="trailTableBody">
+          {{#each trails}}
+            <tr>
+              <td>{{name}}</td>
+              <td>{{surface}}</td>
+              <td>{{difficulty}}</td>
+              <td><span class="badge badge-{{status}}">{{status}}</span></td>
+              <td class="admin-actions">
+                <a class="btn btn-outline" href="/admin/trails/{{_id}}/edit">Edit</a>
+                <form method="POST" action="/admin/trails/{{_id}}/delete" onsubmit="return confirm('Are you sure you want to delete {{name}}? This cannot be undone.')">
+                  <button class="btn btn-danger" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      document.getElementById('trailSearch').addEventListener('input', function () {
+        const query = this.value.toLowerCase();
+        document.querySelectorAll('#trailTableBody tr').forEach(function (row) {
+          const name = row.cells[0].textContent.toLowerCase();;
+          row.style.display = name.includes(query) ? '' : 'none';
+        });
+      });
+    </script>
+    {{else}}
+      <p class="page-desc">No trails found.</p>
+    {{/if}}
+  </section>
+
+  <section class="section">
+    <h2 class="h2">All Reports</h2>
+    {{#if reports.length}}
+      {{#each reports}}
+        <div class="card admin-report-card">
+          <div class="small">{{trailName}} • {{date}} • Severity: {{severity}} • by {{username}} {{#if resolved}}• Resolved{{/if}}</div>
+          <p>{{description}}</p>
+          <form method="POST" action="/admin/trails/{{_id}}/delete" onsubmit="return confirm('Are you sure you want to delete {{name}}? This cannot be undone.')">
+            <button class="btn btn-danger" type="submit">Delete</button>
+          </form>
+        </div>
+      {{/each}}
+    {{else}}
+      <p class="page-desc">No reports found.</p>
+    {{/if}}
+  </section>
 </main>
