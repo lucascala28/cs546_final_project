@@ -56,7 +56,7 @@
         <div class="card admin-report-card">
           <div class="small">{{trailName}} • {{date}} • Severity: {{severity}} • by {{username}} {{#if resolved}}• Resolved{{/if}}</div>
           <p>{{description}}</p>
-          <form method="POST" action="/admin/trails/{{_id}}/delete" onsubmit="return confirm('Are you sure you want to delete {{name}}? This cannot be undone.')">
+          <form method="POST" action="/admin/reports/{{_id}}/delete" onsubmit="return confirm('Are you sure you want to delete this report? This cannot be undone.')">
             <button class="btn btn-danger" type="submit">Delete</button>
           </form>
         </div>
