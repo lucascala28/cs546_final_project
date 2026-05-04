@@ -24,21 +24,8 @@ const router = Router();
 router.get('/', async (req, res) => {
   if (!req.session.user) return res.redirect('/login');
 
-  let reportsCount = 0;
-  let badgesCount = 0;
   let communityFavorites = [];
   let recentReports = [];
-
-  try {
-    const [userReports, freshUser] = await Promise.all([
-      getReportsByUsername(req.session.user.username),
-      getUserById(req.session.user.userId)
-    ]);
-    reportsCount = userReports.length;
-    badgesCount = Array.isArray(freshUser.badges) ? freshUser.badges.length : 0;
-  } catch (e) {
-    console.error('[home] user stats error:', e.message);
-  }
 
   try {
     const favs = await getCommunityFavorites(5);
@@ -62,11 +49,6 @@ router.get('/', async (req, res) => {
     title: 'NJ Trail Monitor',
     pageCss: 'home.css',
     username: req.session.user.username,
-    favoritesCount: Array.isArray(req.session.user.favoriteTrailIds)
-      ? req.session.user.favoriteTrailIds.length
-      : 0,
-    reportsCount,
-    badgesCount,
     communityFavorites,
     recentReports,
     hasCommunityFavorites: communityFavorites.length > 0,

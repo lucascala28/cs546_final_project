@@ -74,7 +74,6 @@ export const searchTrailsByName = async (query) => {
 };
 
 export const searchTrailsByLoc = async (lat, lon, miles) => {
-  console.log(miles);
   const metersPerMile = 1609.34;
   const trailCollection = await trails();
   const nearbyTrails = await trailCollection.find({
@@ -88,8 +87,6 @@ export const searchTrailsByLoc = async (lat, lon, miles) => {
       }
     }
   }).toArray();
-
-  console.log(`Nearby trails length: ${nearbyTrails.length}`)
 
   return nearbyTrails.map((t) => ({ ...t, _id: t._id.toString() }))
 }

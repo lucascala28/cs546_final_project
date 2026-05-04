@@ -60,11 +60,6 @@
   flex-wrap: wrap;
 }
 
-/* .weather-icon,
-.forecast-icon {
-  display: block;
-  flex-shrink: 0;
-} */
 
 .weather-main {
   display: flex;

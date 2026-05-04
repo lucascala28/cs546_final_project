@@ -1,8 +1,7 @@
 import {Router} from 'express';
 import xss from 'xss';
-import { getAllTrails, getTrailById, updateTrail, deleteTrail } from '../data/trail.js';
+import { getAllTrails, getTrailById, updateTrail, deleteTrail, removeReportFromTrail } from '../data/trail.js';
 import { getAllReports, getReportById, deleteReport } from '../data/report.js';
-import { removeReportFromTrail } from '../data/trail.js';
 const router = Router();
 
 // Access gated by admin middleware
