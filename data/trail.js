@@ -143,3 +143,42 @@ export const removeReportFromTrail = async (trailId, reportId) => {
   if (updateInfo.matchedCount === 0) throw new Error("Trail not found");
   return true;
 };
+
+// For Admin
+export const updateTrail = async (id, updatedFields) => {
+  id = checkId(id);
+
+  // only allows editing for name, surface, difficulty, and status, even as an Admin
+  const allowed = ['name', 'surface', 'difficulty', 'status'];
+  const updateObj = {};
+
+  for (const key of allowed) {
+    if (updatedFields[key] !== undefined) {
+      updateObj[key] = String(updatedFields[key]).trim();
+    }
+  }
+
+  if (Object.keys(updateObj).length === 0) throw new Error("No valid fields to update");
+
+  const trailCollection = await trails();
+  const updateInfo = await trailCollection.updateOne(
+    { _id: new ObjectId(id) },
+    { $set: updateObj }
+  );
+
+  if (updateInfo.matchedCount === 0) throw new Error("Trail not found");
+
+  return await getTrailById(id);
+};
+
+// For Admin
+export const deleteTrail = async (id) => {
+  id = checkId(id);
+
+  const trailCollection = await trails();
+  const deleteInfo = await trailCollection.deleteOne({ _id: new ObjectId(id) });
+
+  if (deleteInfo.deletedCount === 0) throw new Error("Trail not found");
+
+  return true;
+};
