@@ -1,7 +1,23 @@
 <section class="hero">
+  <p class="home-greeting">Welcome back, <strong>{{username}}</strong></p>
   <h1>Discover trails near you</h1>
   <div class="hero-actions">
     <a href="/trails" class="btn btn-dark">Browse Trails</a>
     <a href="/favorites" class="btn btn-outline">My Favorites</a>
   </div>
 </section>
+
+<div class="stats-row">
+  <div class="stat-card">
+    <span class="stat-value">{{favoritesCount}}</span>
+    <span class="stat-label">Favorites</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-value">{{reportsCount}}</span>
+    <span class="stat-label">Reports Filed</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-value">{{badgesCount}}</span>
+    <span class="stat-label">Badges Earned</span>
+  </div>
+</div>

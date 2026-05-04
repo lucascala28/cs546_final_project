@@ -9,6 +9,7 @@ import {
 } from "../data/trail.js";
 import { createComment, getCommentsForTrail } from "../data/comment.js";
 import { getReportsForTrail } from "../data/report.js";
+import { getWeatherForCoords } from "../data/weather.js";
 const router = Router();
 
 // Browse trails + search
@@ -56,6 +57,13 @@ router.get("/:id", async (req, res) => {
       ? req.session.user.favoriteTrailIds.includes(id)
       : false;
 
+    let weather = null;
+    const coords = trail.geometry?.coordinates?.[0]?.[0];
+    if (Array.isArray(coords) && coords.length >= 2) {
+      const [lng, lat] = coords;
+      weather = await getWeatherForCoords(lat, lng);
+    }
+
     return res.render("trail", {
       title: trail.name,
       pageCss: "trail.css",
@@ -64,6 +72,7 @@ router.get("/:id", async (req, res) => {
       comments,
       reports,
       isFavorited,
+      weather,
     });
   } catch (e) {
     return res.status(404).render("error", { error: "Trail not found" });
