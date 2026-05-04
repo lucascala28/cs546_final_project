@@ -1,17 +1,58 @@
 import {Router} from 'express';
 import xss from 'xss';
 import bcrypt from 'bcrypt';
-import {createUser, getUserByEmail, getUserById} from '../data/user.js';
-import { getReportsByUsername } from '../data/report.js';
+import {createUser, getUserByEmail, getUserById, getCommunityFavorites} from '../data/user.js';
+import { getReportsByUsername, getRecentReports } from '../data/report.js';
 import {checkUser, checkPassword, checkEmail} from '../helpers.js';
+
+function timeAgo(idStr) {
+  const ts = new Date(parseInt(idStr.substring(0, 8), 16) * 1000);
+  const diff = Date.now() - ts.getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 2) return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `${days}d ago`;
+  return `${Math.floor(days / 7)}w ago`;
+}
 
 const router = Router();
 
 // Landing / home — redirect guests to login, show dashboard to authenticated users
 router.get('/', async (req, res) => {
   if (!req.session.user) return res.redirect('/login');
+
+  let communityFavorites = [];
+  let recentReports = [];
+
+  try {
+    const favs = await getCommunityFavorites(5);
+    communityFavorites = favs.map((f, i) => ({ ...f, rank: i + 1 }));
+  } catch (e) {
+    console.error('[home] community favorites error:', e.message);
+  }
+
+  try {
+    const recent = await getRecentReports(5);
+    recentReports = recent.map((r) => ({
+      ...r,
+      timeAgo: timeAgo(r._id),
+      severityClass: `dot-${r.severity ? r.severity.toLowerCase() : 'low'}`
+    }));
+  } catch (e) {
+    console.error('[home] recent reports error:', e.message);
+  }
+
   return res.render('home', {
-    title: 'NJ Trail Monitor'
+    title: 'NJ Trail Monitor',
+    pageCss: 'home.css',
+    username: req.session.user.username,
+    communityFavorites,
+    recentReports,
+    hasCommunityFavorites: communityFavorites.length > 0,
+    hasRecentReports: recentReports.length > 0
   });
 });
 

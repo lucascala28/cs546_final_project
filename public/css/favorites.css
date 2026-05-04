@@ -29,9 +29,6 @@
   opacity: 0.95;
 }
 
-.trail-meta strong {
-  font-weight: 800;
-}
 
 @media (prefers-reduced-motion: reduce) {
   .trail-card {

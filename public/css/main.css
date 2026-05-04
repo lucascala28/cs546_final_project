@@ -11,7 +11,6 @@ body {
   min-height: 100vh;
 }
 
-/* Temporary scaffolding css, remove when all pages implemented */
 main.page {
   max-width: 960px;
   margin: 0 auto;
